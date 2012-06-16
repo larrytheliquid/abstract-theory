@@ -8,30 +8,30 @@ data _≡_ {A : Set} (a : A) : A → Set where
 data _×_ (A B : Set) : Set where
   _,_ : A → B → A × B
 
-Func : Set
-Func = A → A
+A→A : Set
+A→A = A → A
 
-id : Func
+id : A→A
 id a = a
 
-_∘_ : Func → Func → Func
+_∘_ : A→A → A→A → A→A
 _∘_ g f a = g (f a)
 
-id∘f≡f : (f : Func) (a : A) →
+id∘f≡f : (f : A→A) (a : A) →
   (id ∘ f) a ≡ f a
 id∘f≡f f a = refl
 
-f∘id≡f : (f : Func) (a : A) →
+f∘id≡f : (f : A→A) (a : A) →
   (f ∘ id) a ≡ f a
 f∘id≡f f a = refl
 
-∘assoc : (h g f : Func) (a : A) →
+∘assoc : (h g f : A→A) (a : A) →
   (h ∘ (g ∘ f)) a ≡ ((h ∘ g) ∘ f) a
 ∘assoc h g f a = refl
 
--- FuncMonoid : Monoid
--- FuncMonoid = record
---   { Domain = Func
+-- A→AMonoid : Monoid
+-- A→AMonoid = record
+--   { Domain = A→A
 --   ; e = id
 --   ; ident-law = λ f → id∘f≡f f , f∘id≡f f
 --   ; assoc-law = ∘assoc

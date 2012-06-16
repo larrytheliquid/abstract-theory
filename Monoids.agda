@@ -45,3 +45,17 @@ n+0≡n (suc n) = cong suc (n+0≡n n)
   ; ident-law = λ n → 0+n≡n n , n+0≡n n
   ; assoc-law = +assoc
   }
+
+id : {A : Set} → A → A
+id a = a
+
+_∘_ : {A B C : Set} (g : B → C) (f : A → B) → A → C
+_∘_ g f a = g (f a)
+
+record Isomorphism : Set₁ where
+  field
+    S T : Set
+    to : S → T
+    from : T → S
+    from∘to≡id : (s : S) → (from ∘ to) s ≡ id s
+    to∘from≡id : (t : T) → (to ∘ from) t ≡ id t
