@@ -19,6 +19,8 @@ id a = a
 _∘_ : {A B C : Set} (g : B → C) (f : A → B) → A → C
 _∘_ g f a = g (f a)
 
+-- TODO explicit reductions via equivalence reasoning
+
 f∘id≡f : {A B : Set} (f : A → B) (a : A) →
   (f ∘ id) a ≡ f a
 f∘id≡f f a = refl
