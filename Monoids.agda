@@ -17,11 +17,11 @@ record Monoid : Set₁ where
   field
     S : Set
     e : S
-    _⊙_ : (a b : S) → S
-    ident-law : (a : S) →
-      (e ⊙ a ≡ a) × (a ⊙ e ≡ a)
-    assoc-law : (a b c : S) →
-      (a ⊙ (b ⊙ c)) ≡ ((a ⊙ b) ⊙ c)
+    _⊙_ : (x y : S) → S
+    ident-law : (x : S) →
+      (e ⊙ x ≡ x) × (x ⊙ e ≡ x)
+    assoc-law : (x y z : S) →
+      (x ⊙ (y ⊙ z)) ≡ ((x ⊙ y) ⊙ z)
 
 0+n≡n : (n : ℕ) →
   zero + n ≡ n
