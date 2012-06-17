@@ -1,4 +1,5 @@
 module Monoids where
+open import Data.Bool hiding ( T )
 open import Data.Nat
 
 infix 2 _≡_
@@ -37,13 +38,36 @@ n+0≡n (suc n) = cong suc (n+0≡n n)
 +assoc zero y z = refl
 +assoc (suc x) y z = cong suc (+assoc x y z)
 
-ℕMonoid : Monoid
-ℕMonoid = record
+Monoid∶ℕ+0 : Monoid
+Monoid∶ℕ+0 = record
   { S = ℕ
   ; e = 0
   ; _⊙_ = _+_
   ; ident = λ n → 0+n≡n n , n+0≡n n
   ; assoc = +assoc
+  }
+
+false∨b≡b : (b : Bool) →
+  false ∨ b ≡ b
+false∨b≡b b = refl
+
+b∨false≡b : (b : Bool) →
+  b ∨ false ≡ b
+b∨false≡b true = refl
+b∨false≡b false = refl
+
+∨assoc : (x y z : Bool) →
+  (x ∨ (y ∨ z)) ≡ ((x ∨ y) ∨ z)
+∨assoc true y z = refl
+∨assoc false y z = refl
+
+Monoid∶Bool∨false : Monoid
+Monoid∶Bool∨false = record
+  { S = Bool
+  ; e = false
+  ; _⊙_ = _∨_
+  ; ident = λ b → false∨b≡b b , b∨false≡b b
+  ; assoc = ∨assoc
   }
 
 id : {A : Set} → A → A
