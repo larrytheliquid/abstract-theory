@@ -70,6 +70,41 @@ Monoid∶Bool∨false = record
   ; assoc = ∨assoc
   }
 
+record Homomorphism : Set₁ where
+  field M M′ : Monoid
+  open Monoid M
+  open Monoid M′ renaming
+    ( S to S′ ; e to e′ ; _⊙_ to _⊙′_ )
+
+  field
+    f : S → S′
+    preserves-e : f e ≡ e′
+    preserves-⊙ : (x y : S) →
+      f (x ⊙ y) ≡ f x ⊙′ f y
+
+gtz : ℕ → Bool
+gtz zero = false
+gtz (suc n) = true
+
+gtz0≡false : gtz 0 ≡ false
+gtz0≡false = refl
+
+gtz-preserves+ : (m n : ℕ) →
+  gtz (m + n) ≡ gtz m ∨ gtz n
+gtz-preserves+ zero n = refl
+gtz-preserves+ (suc m) n = refl
+
+Homomorphism∶gtz : Homomorphism
+Homomorphism∶gtz = record
+  { M = Monoid∶ℕ+0
+  ; M′ = Monoid∶Bool∨false
+  ; f = gtz
+  ; preserves-e = gtz0≡false
+  ; preserves-⊙ = gtz-preserves+
+  }
+
+--------------------------------------------------------------------------------
+
 id : {A : Set} → A → A
 id a = a
 
