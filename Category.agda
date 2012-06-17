@@ -12,6 +12,7 @@ record Category : Set₁ where
   field
     S : Set
     _⇴_ : (A B : S) → Set
+
     e : {A : S} → A ⇴ A
     _⊙_ : {A B C : S}
       (x : A ⇴ B) (y : B ⇴ C) → A ⇴ C
@@ -23,17 +24,16 @@ record Category : Set₁ where
 
 record Functor : Set₁ where
   field Α Β : Category
-  open Category Α renaming
-    ( S to ∣Α∣ ; _⇴_ to _⇴₁_ ; e to e₁ ; _⊙_ to _⊙₁_ )
+  open Category Α
   open Category Β renaming
-    ( S to ∣Β∣ ; _⇴_ to _⇴₂_ ; e to e₂ ; _⊙_ to _⊙₂_ )
+    ( S to S′ ; _⇴_ to _⇴′_ ; e to e′ ; _⊙_ to _⊙′_ )
 
   field
-    φ : (X : ∣Α∣) → ∣Β∣
-    ψ : {X Y : ∣Α∣} (f : X ⇴₁ Y) → φ X ⇴₂ φ Y
-    preserves-e : {X : ∣Α∣} →
-      ψ {X} e₁ ≡ e₂
-    preserves-⊙ : {X Y Z : ∣Α∣}
-      (f : X ⇴₁ Y) (g : Y ⇴₁ Z) →
-      ψ (f ⊙₁ g) ≡ ψ f ⊙₂ ψ g
+    ∣f∣ : (X : S) → S′
+    f : {X Y : S} (f : X ⇴ Y) → ∣f∣ X ⇴′ ∣f∣ Y
+    preserves-e : {X : S} →
+      f {X} e ≡ e′
+    preserves-⊙ : {X Y Z : S}
+      (x : X ⇴ Y) (y : Y ⇴ Z) →
+      f (x ⊙ y) ≡ f x ⊙′ f y
 
