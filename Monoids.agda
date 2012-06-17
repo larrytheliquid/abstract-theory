@@ -18,9 +18,9 @@ record Monoid : Set₁ where
     S : Set
     e : S
     _⊙_ : (x y : S) → S
-    ident-law : (x : S) →
+    ident : (x : S) →
       (e ⊙ x ≡ x) × (x ⊙ e ≡ x)
-    assoc-law : (x y z : S) →
+    assoc : (x y z : S) →
       (x ⊙ (y ⊙ z)) ≡ ((x ⊙ y) ⊙ z)
 
 0+n≡n : (n : ℕ) →
@@ -42,8 +42,8 @@ n+0≡n (suc n) = cong suc (n+0≡n n)
   { S = ℕ
   ; e = 0
   ; _⊙_ = _+_
-  ; ident-law = λ n → 0+n≡n n , n+0≡n n
-  ; assoc-law = +assoc
+  ; ident = λ n → 0+n≡n n , n+0≡n n
+  ; assoc = +assoc
   }
 
 id : {A : Set} → A → A
@@ -59,3 +59,5 @@ record Isomorphism : Set₁ where
     from : T → S
     from∘to≡id : (s : S) → (from ∘ to) s ≡ id s
     to∘from≡id : (t : T) → (to ∘ from) t ≡ id t
+
+-- TODO Bool monoid and homomorphism
