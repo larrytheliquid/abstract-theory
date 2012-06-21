@@ -103,6 +103,32 @@ Homomorphism∶gtz = record
   ; preserves-⊙ = gtz-preserves+
   }
 
+record TwoHomomorphisms : Set₁ where
+  field M M′ : Monoid
+  open Monoid M
+  open Monoid M′ renaming
+    ( S to S′ ; e to e′ ; _⊙_ to _⊙′_ )
+
+  field
+    f g : S → S′
+    f-preserves-e : f e ≡ e′
+    f-preserves-⊙ : (x y : S) →
+      f (x ⊙ y) ≡ f x ⊙′ f y
+    g-preserves-e : g e ≡ e′
+    g-preserves-⊙ : (x y : S) →
+      g (x ⊙ y) ≡ g x ⊙′ g y
+
+record NaturalTransformation : Set₁ where
+  field homs : TwoHomomorphisms
+  open TwoHomomorphisms homs
+  open Monoid M
+  open Monoid M′ renaming
+    ( S to S′ ; e to e′ ; _⊙_ to _⊙′_ )
+  
+  field
+    natural : (y : S′) (x : S) →
+      f x ⊙′ y ≡ y ⊙′ g x
+
 --------------------------------------------------------------------------------
 
 id : {A : Set} → A → A
