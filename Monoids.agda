@@ -82,6 +82,7 @@ record Homomorphism : Set₁ where
     preserves-⊙ : (x y : S) →
       f (x ⊙ y) ≡ f x ⊙′ f y
 
+-- preserves the properties of being greater than zero
 gtz : ℕ → Bool
 gtz zero = false
 gtz (suc n) = true
@@ -94,6 +95,19 @@ gtz-preserves+ : (m n : ℕ) →
 gtz-preserves+ zero n = refl
 gtz-preserves+ (suc m) n = refl
 
+-- preserves the properties of being the unit element
+kf : ℕ → Bool
+kf n = false
+
+kf0≡false : kf 0 ≡ false
+kf0≡false = refl
+
+kf-preserves+ : (m n : ℕ) →
+  kf (m + n) ≡ kf m ∨ kf n
+kf-preserves+ m n = refl
+
+-- ℕ→Parity preserves the properties of being even or odd
+
 Homomorphism∶gtz : Homomorphism
 Homomorphism∶gtz = record
   { M = Monoid∶ℕ+0
@@ -101,6 +115,15 @@ Homomorphism∶gtz = record
   ; f = gtz
   ; preserves-e = gtz0≡false
   ; preserves-⊙ = gtz-preserves+
+  }
+
+Homomorphism∶kf : Homomorphism
+Homomorphism∶kf = record
+  { M = Monoid∶ℕ+0
+  ; M′ = Monoid∶Bool∨false
+  ; f = kf
+  ; preserves-e = kf0≡false
+  ; preserves-⊙ = kf-preserves+
   }
 
 record TwoHomomorphisms : Set₁ where
@@ -118,16 +141,46 @@ record TwoHomomorphisms : Set₁ where
     g-preserves-⊙ : (x y : S) →
       g (x ⊙ y) ≡ g x ⊙′ g y
 
+TwoHomomorphism∶gtz+kf : TwoHomomorphisms
+TwoHomomorphism∶gtz+kf = record
+  { M = Monoid∶ℕ+0
+  ; M′ = Monoid∶Bool∨false
+  ; f = gtz
+  ; g = kf
+  ; f-preserves-e = gtz0≡false
+  ; f-preserves-⊙ = gtz-preserves+
+  ; g-preserves-e = kf0≡false
+  ; g-preserves-⊙ = kf-preserves+
+  }
+
 record NaturalTransformation : Set₁ where
   field homs : TwoHomomorphisms
   open TwoHomomorphisms homs
   open Monoid M
   open Monoid M′ renaming
     ( S to S′ ; e to e′ ; _⊙_ to _⊙′_ )
-  
+
   field
-    natural : (y : S′) (x : S) →
-      f x ⊙′ y ≡ y ⊙′ g x
+    τ : S′
+    natural : (x : S) →
+      f x ⊙′ τ ≡ τ ⊙′ g x
+
+-- generalizes to any two functors
+t-natural-for-gtz-kf : (n : ℕ) →
+  gtz n ∨ true ≡ true ∨ kf n
+t-natural-for-gtz-kf zero = refl
+t-natural-for-gtz-kf (suc n) = refl
+
+t-natural-for-kf-gtz : (n : ℕ) →
+  kf n ∨ true ≡ true ∨ gtz n
+t-natural-for-kf-gtz n = refl
+
+NaturalTransformation∶t-gtz-kf : NaturalTransformation
+NaturalTransformation∶t-gtz-kf = record
+  { homs = TwoHomomorphism∶gtz+kf
+  ; τ = true
+  ; natural = t-natural-for-gtz-kf
+  }
 
 --------------------------------------------------------------------------------
 
