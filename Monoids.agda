@@ -15,6 +15,8 @@ data _×_ (A B : Set) : Set where
   _,_ : A → B → A × B
 
 record Monoid : Set₁ where
+  infixr 9 _⊙_
+
   field
     S : Set
     e : S
@@ -165,21 +167,44 @@ record NaturalTransformation : Set₁ where
     natural : (x : S) →
       f x ⊙′ τ ≡ τ ⊙′ g x
 
+record NaturalTransformation′ : Set₁ where
+  field homs : TwoHomomorphisms
+  open TwoHomomorphisms homs
+  open Monoid M
+  open Monoid M′ renaming
+    ( S to S′ ; e to e′ ; _⊙_ to _⊙′_ )
+
+  field
+    τ : S → S′
+    natural : (x y z : S) →
+      τ (x ⊙ y ⊙ z) ≡ f x ⊙′ τ y ⊙′ g z
+
 -- generalizes to any two functors
 t-natural-for-gtz-kf : (n : ℕ) →
   gtz n ∨ true ≡ true ∨ kf n
 t-natural-for-gtz-kf zero = refl
 t-natural-for-gtz-kf (suc n) = refl
 
-t-natural-for-kf-gtz : (n : ℕ) →
-  kf n ∨ true ≡ true ∨ gtz n
-t-natural-for-kf-gtz n = refl
+kt : ℕ → Bool
+kt n = true
+
+kt-natural-for-gtz-kf : (m n o : ℕ) →
+  kt (m + (n + o)) ≡ gtz m ∨ kt n ∨ kf o
+kt-natural-for-gtz-kf zero n o = refl
+kt-natural-for-gtz-kf (suc m) n o = refl
 
 NaturalTransformation∶t-gtz-kf : NaturalTransformation
 NaturalTransformation∶t-gtz-kf = record
   { homs = TwoHomomorphism∶gtz+kf
   ; τ = true
   ; natural = t-natural-for-gtz-kf
+  }
+
+NaturalTransformation∶kt-gtz-kf : NaturalTransformation′
+NaturalTransformation∶kt-gtz-kf = record
+  { homs = TwoHomomorphism∶gtz+kf
+  ; τ = kt
+  ; natural = kt-natural-for-gtz-kf
   }
 
 --------------------------------------------------------------------------------
