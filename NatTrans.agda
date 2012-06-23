@@ -8,6 +8,9 @@ open import Relation.Binary.PropositionalEquality
 id : {A : Set} → A → A
 id x = x
 
+_≣_ : {A B : Set} (f g : A → B) → Set
+f ≣ g = ∀ x → f x ≡ g x
+
 mmap : {A B : Set} (f : A → B) → Maybe A → Maybe B
 mmap f (just x) = just (f x)
 mmap f nothing = nothing
@@ -22,32 +25,31 @@ pmap f g (x , y) = f x , g y
 
 --------------------------------------------------------------------------------
 
-mmap-preserves-id : {A : Set} (m : Maybe A) →
-  mmap id m ≡ id m
+mmap-preserves-id : {A : Set} →
+  mmap {A} id ≣ id
 mmap-preserves-id (just x) = refl
 mmap-preserves-id nothing = refl
 
-mmap-preserves-∘ : {A B C : Set} {f : A → B} {g : B → C} (m : Maybe A) →
-  mmap (g ∘ f) m ≡ (mmap g ∘ mmap f) m
+mmap-preserves-∘ : {A B C : Set} {f : A → B} {g : B → C} →
+  mmap (g ∘ f) ≣ (mmap g ∘ mmap f)
 mmap-preserves-∘ (just x) = refl
 mmap-preserves-∘ nothing = refl
 
-lmap-preserves-id : {A : Set} (xs : List A) →
-  lmap id xs ≡ id xs
+lmap-preserves-id : {A : Set} →
+  lmap {A} id ≣ id
 lmap-preserves-id [] = refl
 lmap-preserves-id (x ∷ xs) = cong (_∷_ x) (lmap-preserves-id xs)
 
-lmap-preserves-∘ : {A B C : Set} {f : A → B} {g : B → C} (xs : List A) →
-  lmap (g ∘ f) xs ≡ (lmap g ∘ lmap f) xs
+lmap-preserves-∘ : {A B C : Set} {f : A → B} {g : B → C} →
+  lmap (g ∘ f) ≣ (lmap g ∘ lmap f)
 lmap-preserves-∘ [] = refl
 lmap-preserves-∘ (x ∷ xs) = cong (_∷_ _) (lmap-preserves-∘ xs)
 
-pmap-preserves-id : {A A′ : Set} (xy : A × A′) →
-  pmap id id xy ≡ id xy
+pmap-preserves-id : {A A′ : Set} →
+  pmap {A = A} {A′ = A′} id id ≣ id
 pmap-preserves-id (x , y) = refl
 
 pmap-preserves-∘ : {A B C A′ B′ C′ : Set}
-  {f : A → B} {g : B → C} {f′ : A′ → B′} {g′ : B′ → C′}
-  (xy : A × A′) →
-  pmap (g ∘ f) (g′ ∘ f′) xy ≡ (pmap g g′ ∘ pmap f f′) xy
+  {f : A → B} {g : B → C} {f′ : A′ → B′} {g′ : B′ → C′} →
+  pmap (g ∘ f) (g′ ∘ f′) ≣ (pmap g g′ ∘ pmap f f′)
 pmap-preserves-∘ (x , y) = refl
