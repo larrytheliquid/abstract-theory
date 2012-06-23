@@ -11,19 +11,11 @@ id x = x
 _≣_ : {A B : Set} (f g : A → B) → Set
 f ≣ g = ∀ x → f x ≡ g x
 
+----------------------------------------------------------------------
+
 mmap : {A B : Set} (f : A → B) → Maybe A → Maybe B
 mmap f (just x) = just (f x)
 mmap f nothing = nothing
-
-lmap : {A B : Set} (f : A → B) → List A → List B
-lmap f [] = []
-lmap f (x ∷ xs) = f x ∷ lmap f xs
-
-pmap : {A B A′ B′ : Set}
-  (f : A → B) (g : A′ → B′) → A × A′ → B × B′
-pmap f g (x , y) = f x , g y
-
---------------------------------------------------------------------------------
 
 mmap-preserves-id : {A : Set} →
   mmap {A} id ≣ id
@@ -35,6 +27,12 @@ mmap-preserves-∘ : {A B C : Set} {f : A → B} {g : B → C} →
 mmap-preserves-∘ (just x) = refl
 mmap-preserves-∘ nothing = refl
 
+----------------------------------------------------------------------
+
+lmap : {A B : Set} (f : A → B) → List A → List B
+lmap f [] = []
+lmap f (x ∷ xs) = f x ∷ lmap f xs
+
 lmap-preserves-id : {A : Set} →
   lmap {A} id ≣ id
 lmap-preserves-id [] = refl
@@ -45,6 +43,12 @@ lmap-preserves-∘ : {A B C : Set} {f : A → B} {g : B → C} →
 lmap-preserves-∘ [] = refl
 lmap-preserves-∘ (x ∷ xs) = cong (_∷_ _) (lmap-preserves-∘ xs)
 
+----------------------------------------------------------------------
+
+pmap : {A B A′ B′ : Set}
+  (f : A → B) (g : A′ → B′) → A × A′ → B × B′
+pmap f g (x , y) = f x , g y
+
 pmap-preserves-id : {A A′ : Set} →
   pmap {A = A} {A′ = A′} id id ≣ id
 pmap-preserves-id (x , y) = refl
@@ -53,3 +57,6 @@ pmap-preserves-∘ : {A B C A′ B′ C′ : Set}
   {f : A → B} {g : B → C} {f′ : A′ → B′} {g′ : B′ → C′} →
   pmap (g ∘ f) (g′ ∘ f′) ≣ (pmap g g′ ∘ pmap f f′)
 pmap-preserves-∘ (x , y) = refl
+
+
+
