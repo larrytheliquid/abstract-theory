@@ -30,3 +30,9 @@ pair-former-is-a-fork h a with h a
 id-is-a-fork : {A B : Set} →
   fork proj₁ proj₂ ≣ id {A × B}
 id-is-a-fork (a , b) = refl
+
+postulate
+  universal-property-of-fork : {A B C : Set}
+    {fork : (f : A → B) (g : A → C) → A → B × C}
+    {f : A → B} {g : A → C} {h : A → B × C} →
+    h ≣ fork f g → (proj₁ ∘ h ≣ f) × (proj₂ ∘ h ≣ g)
