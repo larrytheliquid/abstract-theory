@@ -72,8 +72,7 @@ Monoid∶Bool∨false = record
   ; assoc = ∨assoc
   }
 
-record Homomorphism : Set₁ where
-  field M M′ : Monoid
+record Homomorphism (M M′ : Monoid) : Set₁ where
   open Monoid M
   open Monoid M′ renaming
     ( S to S′ ; e to e′ ; _⊙_ to _⊙′_ )
@@ -110,62 +109,31 @@ kf-preserves+ m n = refl
 
 -- ℕ→Parity preserves the properties of being even or odd
 
-Homomorphism∶gtz : Homomorphism
+Homomorphism∶gtz : Homomorphism Monoid∶ℕ+0 Monoid∶Bool∨false
 Homomorphism∶gtz = record
-  { M = Monoid∶ℕ+0
-  ; M′ = Monoid∶Bool∨false
-  ; f = gtz
+  { f = gtz
   ; preserves-e = gtz0≡false
   ; preserves-⊙ = gtz-preserves+
   }
 
-Homomorphism∶kf : Homomorphism
+Homomorphism∶kf : Homomorphism Monoid∶ℕ+0 Monoid∶Bool∨false
 Homomorphism∶kf = record
-  { M = Monoid∶ℕ+0
-  ; M′ = Monoid∶Bool∨false
-  ; f = kf
+  { f = kf
   ; preserves-e = kf0≡false
   ; preserves-⊙ = kf-preserves+
   }
 
-record TwoHomomorphisms : Set₁ where
-  field M M′ : Monoid
+record NaturalTransformation {M M′ : Monoid} (F G : Homomorphism M M′) : Set₁ where
+  open Homomorphism F
+  open Homomorphism G renaming ( f to g )
   open Monoid M
   open Monoid M′ renaming
     ( S to S′ ; e to e′ ; _⊙_ to _⊙′_ )
 
   field
-    f g : S → S′
-    f-preserves-e : f e ≡ e′
-    f-preserves-⊙ : (x y : S) →
-      f (x ⊙ y) ≡ f x ⊙′ f y
-    g-preserves-e : g e ≡ e′
-    g-preserves-⊙ : (x y : S) →
-      g (x ⊙ y) ≡ g x ⊙′ g y
-
-TwoHomomorphism∶gtz+kf : TwoHomomorphisms
-TwoHomomorphism∶gtz+kf = record
-  { M = Monoid∶ℕ+0
-  ; M′ = Monoid∶Bool∨false
-  ; f = gtz
-  ; g = kf
-  ; f-preserves-e = gtz0≡false
-  ; f-preserves-⊙ = gtz-preserves+
-  ; g-preserves-e = kf0≡false
-  ; g-preserves-⊙ = kf-preserves+
-  }
-
-record NaturalTransformation : Set₁ where
-  field homs : TwoHomomorphisms
-  open TwoHomomorphisms homs
-  open Monoid M
-  open Monoid M′ renaming
-    ( S to S′ ; e to e′ ; _⊙_ to _⊙′_ )
-
-  field
-    τ : S → S′
+    h : S → S′
     natural : (x y z : S) →
-      τ (x ⊙ y ⊙ z) ≡ f x ⊙′ τ y ⊙′ g z
+      h (x ⊙ y ⊙ z) ≡ f x ⊙′ h y ⊙′ g z
 
 kt : ℕ → Bool
 kt n = true
@@ -175,10 +143,9 @@ kt-natural-for-gtz-kf : (m n o : ℕ) →
 kt-natural-for-gtz-kf zero n o = refl
 kt-natural-for-gtz-kf (suc m) n o = refl
 
-NaturalTransformation∶kt-gtz-kf : NaturalTransformation
+NaturalTransformation∶kt-gtz-kf : NaturalTransformation Homomorphism∶gtz Homomorphism∶kf
 NaturalTransformation∶kt-gtz-kf = record
-  { homs = TwoHomomorphism∶gtz+kf
-  ; τ = kt
+  { h = kt
   ; natural = kt-natural-for-gtz-kf
   }
 
