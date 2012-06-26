@@ -9,6 +9,8 @@ data _∧_ (A B : Set) : Set where
   _,_ : A → B → A ∧ B
 
 record Category : Set₁ where
+  infixr 9 _⊙_
+
   field
     U : Set
     _⇴_ : (A B : U) → Set
@@ -22,10 +24,9 @@ record Category : Set₁ where
       (x : A ⇴ B) (y : B ⇴ C) (z : C ⇴ D) →
       (x ⊙ (y ⊙ z)) ≡ ((x ⊙ y) ⊙ z)
 
-record Functor : Set₁ where
-  field Α Β : Category
-  open Category Α
-  open Category Β renaming
+record Functor (C D : Category) : Set₁ where
+  open Category C
+  open Category D renaming
     ( U to U′ ; _⇴_ to _⇴′_ ; e to e′ ; _⊙_ to _⊙′_ )
 
   field
@@ -37,3 +38,15 @@ record Functor : Set₁ where
       (x : X ⇴ Y) (y : Y ⇴ Z) →
       f (x ⊙ y) ≡ f x ⊙′ f y
 
+record NaturalTransformation {C D} (F G : Functor C D) : Set₁ where
+  open Functor F
+  open Functor G renaming ( ∣f∣ to ∣g∣ ; f to g )
+  open Category C
+  open Category D renaming
+    ( U to U′ ; _⇴_ to _⇴′_ ; e to e′ ; _⊙_ to _⊙′_ )
+
+  field
+    h : {A B : U} → A ⇴ B → ∣f∣ A ⇴′ ∣g∣ B
+    natural : {A B C D : U}
+      (x : A ⇴ B) (y : B ⇴ C) (z : C ⇴ D) →
+      h (x ⊙ y ⊙ z) ≡ f x ⊙′ h y ⊙′ g z

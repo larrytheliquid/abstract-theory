@@ -123,7 +123,7 @@ Homomorphism∶kf = record
   ; preserves-⊙ = kf-preserves+
   }
 
-record NaturalTransformation {M M′ : Monoid} (F G : Homomorphism M M′) : Set₁ where
+record NaturalTransformation {M M′} (F G : Homomorphism M M′) : Set₁ where
   open Homomorphism F
   open Homomorphism G renaming ( f to g )
   open Monoid M
