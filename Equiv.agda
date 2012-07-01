@@ -1,9 +1,14 @@
 module Equiv where
 
+infix  1 proof_
 infix  2 _∎
+infix  2 _⇔_
 infixr 2 _⇔⟨_⟩_
 infixr 4 _,_
 infixr 9 _∘_
+
+_$_ : ∀ {A B : Set} → (A → B) → (A → B)
+f $ x = f x
 
 id : {A : Set} → A → A
 id a = a
@@ -31,6 +36,9 @@ _∎ = refl
 _⇔⟨_⟩_ : (A : Set) {B C : Set} →
   A ⇔ B → B ⇔ C → A ⇔ C
 A ⇔⟨ ab ⟩ bc = trans ab bc
+
+proof_ : {A B : Set} {{b : B}} → A ⇔ B → A
+proof_ {{b}} e = _⇔_.from e b
 
 
 
