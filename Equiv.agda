@@ -1,6 +1,6 @@
 module Equiv where
 
-infix  1 proof_
+infix  1 proof[_]_
 infix  2 _∎
 infix  2 _⇔_
 infixr 2 _⇔⟨_⟩_
@@ -37,8 +37,8 @@ _⇔⟨_⟩_ : (A : Set) {B C : Set} →
   A ⇔ B → B ⇔ C → A ⇔ C
 A ⇔⟨ ab ⟩ bc = trans ab bc
 
-proof_ : {A B : Set} {{b : B}} → A ⇔ B → A
-proof_ {{b}} e = _⇔_.from e b
+proof[_]_ : {A B : Set} (b : B) → A ⇔ B → A
+proof[_]_ b e = _⇔_.from e b
 
 
 

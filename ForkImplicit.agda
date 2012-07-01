@@ -20,7 +20,6 @@ record Fork : Set₁ where
   field
     fork : {A B C : Set} (f : A → B) (g : A → C) → A → B × C
     charn : {A B C : Set} (f : A → B) (g : A → C) (h : A → B × C) (a : A) →
-          (π₁ ∘ h) a ≡ f a 
-        × (π₂ ∘ h) a ≡ g a
-      ⇔ h a ≡ (fork f g) a
+         h a ≡ (fork f g) a
+      ⇔ (π₁ ∘ h) a ≡ f a × (π₂ ∘ h) a ≡ g a
 
