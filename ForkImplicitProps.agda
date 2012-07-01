@@ -19,3 +19,12 @@ pair-former-is-a-fork h a =
   ⇔⟨ charn (π₁ ∘ h) (π₂ ∘ h) h a ⟩
     (π₁ ∘ h) a ≡ (π₁ ∘ h) a × (π₂ ∘ h) a ≡ (π₂ ∘ h) a
   ∎
+
+id-is-a-fork : {A B : Set} (ab : A × B) →
+  id ab ≡ (fork π₁ π₂) ab
+id-is-a-fork ab =
+  proof[ equal , equal ]
+    id ab ≡ (fork π₁ π₂) ab
+  ⇔⟨ charn π₁ π₂ id ab ⟩
+    (π₁ ∘ id) ab ≡ π₁ ab × (π₂ ∘ id) ab ≡ π₂ ab
+  ∎
