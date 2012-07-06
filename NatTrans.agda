@@ -8,6 +8,7 @@ open import Relation.Binary.PropositionalEquality
 id : {A : Set} → A → A
 id x = x
 
+infix 4 _≣_
 _≣_ : {A B : Set} (f g : A → B) → Set
 f ≣ g = ∀ x → f x ≡ g x
 
@@ -43,6 +44,18 @@ lmap-preserves-∘ : {A B C : Set} {f : A → B} {g : B → C} →
 lmap-preserves-∘ [] = refl
 lmap-preserves-∘ (x ∷ xs) = cong (_∷_ _) (lmap-preserves-∘ xs)
 
+postulate
+  reverse-natural : {A B : Set} → (f : A → B) →
+    lmap f ∘ reverse ≣ reverse ∘ lmap f
+
+maybeToList : {A : Set} → Maybe A → List A
+maybeToList (just x) = x ∷ []
+maybeToList nothing = []
+
+postulate
+  maybeToList-natural : {A B : Set} (f : A → B) →
+    lmap f ∘ maybeToList ≣ maybeToList ∘ mmap f
+
 ----------------------------------------------------------------------
 
 pmap : {A B A′ B′ : Set}
@@ -57,6 +70,7 @@ pmap-preserves-∘ : {A B C A′ B′ C′ : Set}
   {f : A → B} {g : B → C} {f′ : A′ → B′} {g′ : B′ → C′} →
   pmap (g ∘ f) (g′ ∘ f′) ≣ (pmap g g′ ∘ pmap f f′)
 pmap-preserves-∘ (x , y) = refl
+
 
 
 
