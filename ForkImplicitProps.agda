@@ -10,7 +10,7 @@ open Fork F
   ⇔⟨ sym $ charn f g (fork f g) a ⟩
     (fork f g) a ≡ (fork f g) a
   ∎
-    
+
 pair-former-is-a-fork : {A B C : Set} (h : A → B × C) (a : A) →
   h a ≡ (fork (π₁ ∘ h) (π₂ ∘ h)) a
 pair-former-is-a-fork h a =
