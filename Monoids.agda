@@ -1,18 +1,12 @@
 module Monoids where
 open import Data.Bool hiding ( T )
 open import Data.Nat
-
-infix 2 _≡_
-
-data _≡_ {A : Set} (a : A) : A → Set where
-  refl : a ≡ a
+open import Prelude
+open import Equiv
 
 cong : {A B : Set} {x y : A} (f : A → B) →
   x ≡ y → f x ≡ f y
-cong f refl = refl
-
-data _×_ (A B : Set) : Set where
-  _,_ : A → B → A × B
+cong f equal = equal
 
 record Monoid : Set₁ where
   infixr 9 _⊙_
@@ -28,16 +22,16 @@ record Monoid : Set₁ where
 
 0+n≡n : (n : ℕ) →
   zero + n ≡ n
-0+n≡n n = refl
+0+n≡n n = equal
 
 n+0≡n : (n : ℕ) →
   n + zero ≡ n
-n+0≡n zero = refl
+n+0≡n zero = equal
 n+0≡n (suc n) = cong suc (n+0≡n n)
 
 +assoc : (x y z : ℕ) →
   (x + (y + z)) ≡ ((x + y) + z)
-+assoc zero y z = refl
++assoc zero y z = equal
 +assoc (suc x) y z = cong suc (+assoc x y z)
 
 Monoid∶ℕ+0 : Monoid
@@ -51,17 +45,17 @@ Monoid∶ℕ+0 = record
 
 false∨b≡b : (b : Bool) →
   false ∨ b ≡ b
-false∨b≡b b = refl
+false∨b≡b b = equal
 
 b∨false≡b : (b : Bool) →
   b ∨ false ≡ b
-b∨false≡b true = refl
-b∨false≡b false = refl
+b∨false≡b true = equal
+b∨false≡b false = equal
 
 ∨assoc : (x y z : Bool) →
   (x ∨ (y ∨ z)) ≡ ((x ∨ y) ∨ z)
-∨assoc true y z = refl
-∨assoc false y z = refl
+∨assoc true y z = equal
+∨assoc false y z = equal
 
 Monoid∶Bool∨false : Monoid
 Monoid∶Bool∨false = record
@@ -89,23 +83,23 @@ gtz zero = false
 gtz (suc n) = true
 
 gtz0≡false : gtz 0 ≡ false
-gtz0≡false = refl
+gtz0≡false = equal
 
 gtz-preserves+ : (m n : ℕ) →
   gtz (m + n) ≡ gtz m ∨ gtz n
-gtz-preserves+ zero n = refl
-gtz-preserves+ (suc m) n = refl
+gtz-preserves+ zero n = equal
+gtz-preserves+ (suc m) n = equal
 
 -- preserves the properties of being the unit element
 kf : ℕ → Bool
 kf n = false
 
 kf0≡false : kf 0 ≡ false
-kf0≡false = refl
+kf0≡false = equal
 
 kf-preserves+ : (m n : ℕ) →
   kf (m + n) ≡ kf m ∨ kf n
-kf-preserves+ m n = refl
+kf-preserves+ m n = equal
 
 -- ℕ→Parity preserves the properties of being even or odd
 
@@ -140,8 +134,8 @@ kt n = true
 
 kt-natural-for-gtz-kf : (m n o : ℕ) →
   kt (m + (n + o)) ≡ gtz m ∨ kt n ∨ kf o
-kt-natural-for-gtz-kf zero n o = refl
-kt-natural-for-gtz-kf (suc m) n o = refl
+kt-natural-for-gtz-kf zero n o = equal
+kt-natural-for-gtz-kf (suc m) n o = equal
 
 NaturalTransformation∶kt-gtz-kf : NaturalTransformation Homomorphism∶gtz Homomorphism∶kf
 NaturalTransformation∶kt-gtz-kf = record
@@ -151,12 +145,6 @@ NaturalTransformation∶kt-gtz-kf = record
 
 ----------------------------------------------------------------------
 
-id : {A : Set} → A → A
-id a = a
-
-_∘_ : {A B C : Set} (g : B → C) (f : A → B) → A → C
-_∘_ g f a = g (f a)
-
 record Isomorphism : Set₁ where
   field
     S T : Set
@@ -164,5 +152,13 @@ record Isomorphism : Set₁ where
     from : T → S
     from∘to≡id : (s : S) → (from ∘ to) s ≡ id s
     to∘from≡id : (t : T) → (to ∘ from) t ≡ id t
+
+record Isomorphism′ : Set₁ where
+  field
+    A B : Set
+    f : A → B
+    fº : B → A
+    charn : (a : A) (b : B) →
+      a ≡ fº b ⇔ b ≡ f a
 
 -- TODO Bool monoid and homomorphism
