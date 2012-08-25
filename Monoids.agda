@@ -99,6 +99,22 @@ Monoid∶Bool∨false = record
   ; assoc = ∨assoc
   }
 
+falsexorb≡b : (b : Bool) →
+  false xor b ≡ b
+falsexorb≡b b = equal
+
+bxorfalse≡b : (b : Bool) →
+  b xor false ≡ b
+bxorfalse≡b true = equal
+bxorfalse≡b false = equal
+
+xor-assoc : (x y z : Bool) →
+  (x xor (y xor z)) ≡ ((x xor y) xor z)
+xor-assoc true true true = equal
+xor-assoc true true false = equal
+xor-assoc true false z = equal
+xor-assoc false y z = equal
+
 record Homomorphism (M M′ : Monoid) : Set₁ where
   open Monoid M
   open Monoid M′ renaming
@@ -109,6 +125,19 @@ record Homomorphism (M M′ : Monoid) : Set₁ where
     preserves-e : f e ≡ e′
     preserves-⊙ : (x y : S) →
       f (x ⊙ y) ≡ f x ⊙′ f y
+
+odd : ℕ → Bool
+odd zero = false
+odd (suc zero) = true
+odd (suc (suc n)) = odd n
+
+odd-preserves+ : (m n : ℕ) →
+  odd (m + n) ≡ odd m xor odd n
+odd-preserves+ zero n = equal
+odd-preserves+ (suc zero) zero = equal
+odd-preserves+ (suc zero) (suc zero) = equal
+odd-preserves+ (suc zero) (suc (suc n)) = odd-preserves+ (suc zero) n
+odd-preserves+ (suc (suc m)) n = odd-preserves+ m n
 
 -- preserves the properties of being greater than zero
 gtz : ℕ → Bool
