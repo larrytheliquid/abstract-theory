@@ -1,6 +1,6 @@
 module Monoids where
 open import Data.Bool hiding ( T )
-open import Data.Nat
+open import Data.Nat hiding ( Ordering )
 open import Prelude
 open import Equiv
 
@@ -41,6 +41,39 @@ Monoid∶ℕ+0 = record
   ; _⊙_ = _+_
   ; ident = λ n → 0+n≡n n , n+0≡n n
   ; assoc = +assoc
+  }
+
+data Order : Set where
+  less same greater : Order
+
+_⟪_ : Order → Order → Order
+less ⟪ _ = less
+same ⟪ y = y
+greater ⟪ _ = greater
+
+same⟪o≡o : (o : Order) →
+  same ⟪ o ≡ o
+same⟪o≡o o = equal
+
+o⟪same≡o : (o : Order) →
+  o ⟪ same ≡ o
+o⟪same≡o less = equal
+o⟪same≡o same = equal
+o⟪same≡o greater = equal
+
+⟪assoc : (x y z : Order) →
+  (x ⟪ (y ⟪ z)) ≡ ((x ⟪ y) ⟪ z)
+⟪assoc less y z = equal
+⟪assoc same y z = equal
+⟪assoc greater y z = equal
+
+Monoid∶Order⟪same : Monoid
+Monoid∶Order⟪same = record
+  { S = Order
+  ; e = same
+  ; _⊙_ = _⟪_
+  ; ident = λ o → same⟪o≡o o , o⟪same≡o o
+  ; assoc = ⟪assoc
   }
 
 false∨b≡b : (b : Bool) →
