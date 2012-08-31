@@ -85,3 +85,9 @@ icompile sum (x ∷ y ∷ xs) = bop (x ∷ y ∷ xs) add
 icompile product (x ∷ y ∷ xs) = bop (x ∷ y ∷ xs) mul
 icompile (num x) xs = push xs x
 
+coh : ∀{m n} →
+  (op : Op m) (xs : Vec Val (m + n)) →
+  exec (forget $ icompile op xs) xs ≡ eval op (take m xs) ∷ (drop m xs)
+coh sum (_ ∷ _ ∷ _) = refl
+coh product (_ ∷ _ ∷ _) = refl
+coh (num _) _ = refl
